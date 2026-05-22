@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>팔협지식 경매</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --surface: #ffffff;
+      --surface-soft: #f1f4fa;
+      --line: #d8e0ef;
+      --text: #20263a;
+      --muted: #6f7890;
+      --blue: #9bb7e8;
+      --blue-strong: #597fc6;
+      --purple: #b5a6df;
+      --purple-soft: #eeeaf8;
+      --gold: #bd8a13;
+      --gold-soft: #fff4cf;
+      --danger: #e65858;
+      --success: #4d9f76;
+      --shadow: 0 12px 30px rgba(70, 82, 118, 0.11);
+      --shadow-hover: 0 16px 38px rgba(70, 82, 118, 0.17);
+      --radius: 18px;
+      --max-width: 1180px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      font-family:
+        "Pretendard",
+        "Apple SD Gothic Neo",
+        "Noto Sans KR",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+      background:
+        radial-gradient(circle at 12% 0%, rgba(181, 166, 223, 0.17), transparent 32%),
+        radial-gradient(circle at 88% 10%, rgba(155, 183, 232, 0.18), transparent 30%),
+        var(--bg);
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(100% - 32px, var(--max-width));
+      margin: 0 auto;
+      padding: 34px 0 44px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .title-area h1 {
+      margin: 0 0 8px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+      font-weight: 800;
+    }
+
+    .title-area p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .top-actions {
+      display: flex;
+      flex: 0 0 auto;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .reset-button,
+    .shuffle-button {
+      flex: 0 0 auto;
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .reset-button {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue-strong), #8370c6);
+      box-shadow: 0 10px 22px rgba(89, 127, 198, 0.2);
+    }
+
+    .shuffle-button {
+      color: #425378;
+      background: #eef3fb;
+      border: 1px solid var(--line);
+      box-shadow: 0 8px 18px rgba(70, 82, 118, 0.08);
+    }
+
+    .reset-button:hover,
+    .shuffle-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 28px rgba(70, 82, 118, 0.15);
+    }
+
+    .rules-card,
+    .team-card,
+    .panel-card,
+    .auction-card,
+    .player-card,
+    .modal-card {
+      border: 1px solid rgba(223, 231, 251, 0.82);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.88);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+    }
+
+    .rules-card {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .rule-item {
+      min-height: 82px;
+      padding: 16px;
+      border-radius: 14px;
+      background: linear-gradient(145deg, var(--surface-soft), #fff);
+      border: 1px solid var(--line);
+    }
+
+    .rule-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .rule-value {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin: 26px 0 12px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .section-title span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .tier-note {
+      color: #8b92a3;
+      font-weight: 700;
+    }
+
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .main-column {
+      min-width: 0;
+    }
+
+    .auction-card {
+      position: sticky;
+      top: 18px;
+      padding: 18px;
+    }
+
+    .auction-card h2 {
+      margin: 0 0 8px;
+      font-size: 21px;
+    }
+
+    .auction-card > p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      font-weight: 700;
+    }
+
+    .auction-form {
+      display: grid;
+      gap: 13px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field-group label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .auction-select,
+    .auction-input {
+      width: 100%;
+      min-height: 44px;
+      padding: 11px 12px;
+      color: var(--text);
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .auction-select:focus,
+    .auction-input:focus {
+      border-color: var(--blue-strong);
+      box-shadow: 0 0 0 4px rgba(155, 183, 232, 0.22);
+    }
+
+    .auction-submit {
+      min-height: 46px;
+      padding: 12px 14px;
+      border-radius: 13px;
+      color: #fff;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--blue-strong), #8370c6);
+      box-shadow: 0 10px 20px rgba(89, 127, 198, 0.19);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .auction-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(89, 127, 198, 0.24);
+    }
+
+    .award-system {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(145deg, #ffffff, var(--surface-soft));
+    }
+
+    .award-system strong {
+      font-size: 15px;
+    }
+
+    .award-system span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .award-button {
+      min-height: 44px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      color: #4f3f88;
+      font-weight: 800;
+      background: var(--purple-soft);
+      border: 1px solid #dcd3fb;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .award-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(70, 82, 118, 0.12);
+    }
+
+    .auction-message {
+      min-height: 21px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .auction-message.error {
+      color: var(--danger);
+    }
+
+    .auction-message.success {
+      color: var(--success);
+    }
+
+    .auction-board {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+
+    .auction-board-title {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .auction-bid-list {
+      display: grid;
+      gap: 9px;
+      min-height: 92px;
+      padding: 10px;
+      border: 1px dashed #c8d7fb;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f8faff, #fff);
+    }
+
+    .auction-bid-item {
+      display: grid;
+      gap: 5px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .auction-bid-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-weight: 800;
+    }
+
+    .auction-bid-point {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #315182;
+      background: #eaf2ff;
+      white-space: nowrap;
+    }
+
+    .auction-bid-team {
+      width: fit-content;
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: #4a5f8d;
+      background: #eef3fb;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .team-card {
+      min-height: 294px;
+      padding: 18px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .team-card.drag-over {
+      transform: translateY(-4px);
+      border-color: var(--blue-strong);
+      box-shadow: var(--shadow-hover);
+      outline: 4px solid rgba(143, 184, 255, 0.18);
+    }
+
+    .team-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .team-name {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .team-note {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .point-pill {
+      min-width: 74px;
+      height: fit-content;
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: #315182;
+      text-align: center;
+      font-weight: 800;
+      background: #eaf2ff;
+    }
+
+    .team-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      padding: 10px;
+      border-radius: 13px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line);
+    }
+
+    .stat-box span {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .stat-box strong {
+      font-size: 17px;
+    }
+
+    .team-members {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 142px;
+      padding: 12px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, #f8faff, #fff);
+      border: 1px dashed #c8d7fb;
+    }
+
+    .empty-message {
+      margin: auto;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .panel-card {
+      padding: 18px;
+    }
+
+    .players-list {
+      min-height: 156px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+      gap: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, #f8faff, #fff);
+      border: 1px dashed #c8d7fb;
+    }
+
+    .players-list.drag-over {
+      border-color: var(--purple);
+      outline: 4px solid rgba(188, 167, 255, 0.17);
+    }
+
+    .player-card {
+      display: grid;
+      gap: 9px;
+      min-height: 96px;
+      padding: 13px;
+      cursor: grab;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    .player-card:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .player-card.dragging {
+      opacity: 0.48;
+      cursor: grabbing;
+    }
+
+    .player-card.assigned {
+      background: linear-gradient(145deg, #ffffff, var(--purple-soft));
+    }
+
+    .player-name {
+      width: fit-content;
+      max-width: 100%;
+      color: var(--text);
+      font-size: 17px;
+      font-weight: 800;
+      text-align: left;
+      border-radius: 6px;
+      overflow-wrap: anywhere;
+    }
+
+    .player-name:hover {
+      color: var(--blue-strong);
+    }
+
+    .gold-name,
+    .player-name.gold-name {
+      color: var(--gold);
+    }
+
+    .player-name.gold-name:hover {
+      color: #9c7110;
+    }
+
+    .player-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .score-badge,
+    .status-badge {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #eef4ff;
+      color: #42679f;
+      white-space: nowrap;
+    }
+
+    .status-badge.selected {
+      color: #6a4db5;
+      background: var(--purple-soft);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: rgba(37, 45, 67, 0.38);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+      animation: fadeIn 0.16s ease;
+    }
+
+    .modal-card {
+      width: min(100%, 420px);
+      padding: 24px;
+      background: #fff;
+      animation: popIn 0.18s ease;
+    }
+
+    .modal-card h3 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+
+    .modal-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .score-input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      color: var(--text);
+      background: var(--surface-soft);
+      font-size: 18px;
+      font-weight: 800;
+      outline: none;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .score-input:focus {
+      border-color: var(--blue-strong);
+      box-shadow: 0 0 0 4px rgba(143, 184, 255, 0.22);
+    }
+
+    .modal-error {
+      min-height: 22px;
+      margin: 10px 0 2px;
+      color: var(--danger);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .ghost-button,
+    .primary-button {
+      padding: 11px 15px;
+      border-radius: 12px;
+      font-weight: 800;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .ghost-button {
+      color: var(--muted);
+      background: #f0f3fb;
+    }
+
+    .primary-button {
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue-strong), #927ce8);
+      box-shadow: 0 10px 20px rgba(93, 142, 232, 0.22);
+    }
+
+    .ghost-button:hover,
+    .primary-button:hover {
+      transform: translateY(-1px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes popIn {
+      from { transform: translateY(10px) scale(0.98); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 960px) {
+      .rules-card,
+      .teams-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .auction-card {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        width: min(100% - 22px, var(--max-width));
+        padding-top: 22px;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .top-actions,
+      .reset-button,
+      .shuffle-button {
+        width: 100%;
+      }
+
+      .rules-card,
+      .teams-grid,
+      .team-stats {
+        grid-template-columns: 1fr;
+      }
+
+      .players-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title-area">
+        <h1>팔협지식 경매</h1>
+        <p>이래서 팔협지 팔협지 하는구나...</p>
+      </div>
+      <div class="top-actions">
+        <button class="shuffle-button" id="shuffleButton" type="button">순서 랜덤 섞기</button>
+        <button class="reset-button" id="resetButton" type="button">전체 초기화</button>
+      </div>
+    </header>
+
+    <section class="rules-card" aria-label="기본 규칙">
+      <div class="rule-item">
+        <span class="rule-label">기본 단위</span>
+        <strong class="rule-value">1</strong>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">기본 포인트</span>
+        <strong class="rule-value">1 / 15</strong>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">최소 베팅</span>
+        <strong class="rule-value">1 / 15</strong>
+      </div>
+      <div class="rule-item">
+        <span class="rule-label">방출 규칙</span>
+        <strong class="rule-value">불가능</strong>
+      </div>
+    </section>
+
+    <div class="dashboard-layout">
+      <div class="main-column">
+        <section aria-label="팀 영역">
+          <div class="section-title">
+            <h2>팀 현황</h2>
+            <span>드롭해서 배정 / 다시 옮기기 가능</span>
+          </div>
+          <div class="teams-grid" id="teamsGrid"></div>
+        </section>
+
+        <section aria-label="플레이어 리스트">
+          <div class="section-title">
+            <h2>선수 목록</h2>
+            <span>팀 밖으로 빼면 목록으로 복귀 · <span class="tier-note">티어가 골드 이상이면 이름이 황금색</span></span>
+          </div>
+          <div class="panel-card">
+            <div class="players-list" id="playersList"></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="auction-card" aria-label="경매 입력 시스템">
+        <h2>경매 시스템</h2>
+        <p>여기는 경매 현황 기록용입니다. 실제 선수 포인트 변경은 선수 카드 클릭으로만 가능합니다.</p>
+        <div class="auction-form">
+          <div class="field-group">
+            <label for="auctionPlayerSelect">경매되는 사람</label>
+            <select class="auction-select" id="auctionPlayerSelect"></select>
+          </div>
+          <div class="field-group">
+            <label for="auctionTeamSelect">부른 사람</label>
+            <select class="auction-select" id="auctionTeamSelect"></select>
+          </div>
+          <div class="field-group">
+            <label for="auctionBidInput">현재 부른 값</label>
+            <input class="auction-input" id="auctionBidInput" type="number" min="1" step="1" value="1" />
+          </div>
+          <button class="auction-submit" id="auctionApplyButton" type="button">입력하기</button>
+          <div class="award-system">
+            <strong>낙찰 시스템</strong>
+            <span>선택된 선수에게 가장 높은 값을 부른 팀으로 바로 배정합니다.</span>
+            <button class="award-button" id="awardButton" type="button">최고가로 낙찰하기</button>
+          </div>
+          <div class="auction-message" id="auctionMessage" aria-live="polite"></div>
+          <div class="auction-board">
+            <span class="auction-board-title">현재 입력된 경매값</span>
+            <div class="auction-bid-list" id="auctionBidList"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal-backdrop" id="scoreModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <h3 id="modalTitle">점수 입력</h3>
+      <p id="modalDescription">배정된 팀이 있는 선수만 팀 포인트에서 점수가 차감됩니다.</p>
+      <input class="score-input" id="scoreInput" type="number" min="15" step="1" placeholder="15" />
+      <div class="modal-error" id="modalError" aria-live="polite"></div>
+      <div class="modal-actions">
+        <button class="ghost-button" id="cancelScoreButton" type="button">취소</button>
+        <button class="primary-button" id="saveScoreButton" type="button">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = "league-team-auction-state-v1";
+    const BASE_PLAYER_POINT_NORMAL = 1;
+    const BASE_PLAYER_POINT_GOLD = 15;
+
+    function getBasePoint(playerName) {
+      return goldTierPlayers.includes(playerName) ? BASE_PLAYER_POINT_GOLD : BASE_PLAYER_POINT_NORMAL;
+    }
+    const MIN_BID_GOLD = 15;
+    const MIN_BID_NORMAL = 1;
+
+    const goldTierPlayers = ["감성준", "왁왁", "힘웃사", "그그달", "레몬", "콩나물"];
+
+    function getMinBid(playerName) {
+      return goldTierPlayers.includes(playerName) ? MIN_BID_GOLD : MIN_BID_NORMAL;
+    }
+
+    const initialTeams = [
+      { id: "legend", name: "레전드", points: 200, note: "" },
+      { id: "youngho", name: "영호", points: 200, note: "" },
+      { id: "potato", name: "감자", points: 200, note: "" },
+      { id: "asera", name: "아세라", points: 80, note: "탑 고정" }
+    ];
+
+    const initialPlayers = [
+      "실버",
+      "천사",
+      "왁왁",
+      "유혜지",
+      "브이",
+      "힘웃사",
+      "핑거팁",
+      "감성준",
+      "망객",
+      "레몬",
+      "밴치",
+      "그그달",
+      "민초",
+      "황정호",
+      "윈드",
+      "콩나물"
+    ];
+
+    const teamsGrid = document.getElementById("teamsGrid");
+    const playersList = document.getElementById("playersList");
+    const shuffleButton = document.getElementById("shuffleButton");
+    const resetButton = document.getElementById("resetButton");
+    const auctionPlayerSelect = document.getElementById("auctionPlayerSelect");
+    const auctionTeamSelect = document.getElementById("auctionTeamSelect");
+    const auctionBidInput = document.getElementById("auctionBidInput");
+    const auctionApplyButton = document.getElementById("auctionApplyButton");
+    const awardButton = document.getElementById("awardButton");
+    const auctionMessage = document.getElementById("auctionMessage");
+    const auctionBidList = document.getElementById("auctionBidList");
+    const scoreModal = document.getElementById("scoreModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalDescription = document.getElementById("modalDescription");
+    const scoreInput = document.getElementById("scoreInput");
+    const modalError = document.getElementById("modalError");
+    const cancelScoreButton = document.getElementById("cancelScoreButton");
+    const saveScoreButton = document.getElementById("saveScoreButton");
+
+    let state = loadState();
+    let draggedPlayerId = null;
+    let editingPlayerId = null;
+
+    function createInitialState() {
+      return {
+        teams: initialTeams.map((team) => ({ ...team })),
+        players: initialPlayers.map((name, index) => ({
+          id: `player-${index}`,
+          name,
+          score: getBasePoint(name),
+          teamId: null
+        })),
+        auctionBids: []
+      };
+    }
+
+    function loadState() {
+      const savedState = localStorage.getItem(STORAGE_KEY);
+
+      if (!savedState) {
+        return createInitialState();
+      }
+
+      try {
+        const parsedState = JSON.parse(savedState);
+        const hasPlayers = Array.isArray(parsedState.players);
+        const hasTeams = Array.isArray(parsedState.teams);
+        return hasPlayers && hasTeams ? normalizeState(parsedState) : createInitialState();
+      } catch (error) {
+        return createInitialState();
+      }
+    }
+
+    function normalizeState(savedState) {
+      const freshState = createInitialState();
+      const savedPlayersByName = new Map(savedState.players.map((player) => [player.name, player]));
+
+      return {
+        teams: freshState.teams,
+        players: freshState.players.map((freshPlayer) => {
+          const savedPlayer = savedPlayersByName.get(freshPlayer.name);
+
+          if (!savedPlayer) {
+            return freshPlayer;
+          }
+
+          const savedScore = Number(savedPlayer.score);
+          const basePoint = getBasePoint(freshPlayer.name);
+          const score = Number.isInteger(savedScore) ? Math.max(basePoint, savedScore) : basePoint;
+          const teamExists = freshState.teams.some((team) => team.id === savedPlayer.teamId);
+
+          return {
+            ...freshPlayer,
+            score,
+            teamId: teamExists ? savedPlayer.teamId : null
+          };
+        }),
+        auctionBids: normalizeAuctionBids(savedState.auctionBids, freshState)
+      };
+    }
+
+    function normalizeAuctionBids(savedBids, freshState) {
+      if (!Array.isArray(savedBids)) {
+        return [];
+      }
+
+      return savedBids
+        .filter((bid) => {
+          const hasPlayer = freshState.players.some((player) => player.id === bid.playerId);
+          const hasTeam = freshState.teams.some((team) => team.id === bid.teamId);
+          return hasPlayer && hasTeam;
+        })
+        .map((bid) => {
+          const player = freshState.players.find((p) => p.id === bid.playerId);
+          const minBid = player ? getMinBid(player.name) : MIN_BID_NORMAL;
+          return {
+            playerId: bid.playerId,
+            teamId: bid.teamId,
+            value: Math.max(minBid, Number(bid.value) || minBid)
+          };
+        });
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function getTeam(teamId) {
+      return state.teams.find((team) => team.id === teamId);
+    }
+
+    function getPlayer(playerId) {
+      return state.players.find((player) => player.id === playerId);
+    }
+
+    function getTeamPlayers(teamId) {
+      return state.players.filter((player) => player.teamId === teamId);
+    }
+
+    function getUsedPoints(teamId) {
+      return getTeamPlayers(teamId).reduce((total, player) => total + player.score, 0);
+    }
+
+    function getRemainPoints(teamId) {
+      const team = getTeam(teamId);
+      return team.points - getUsedPoints(teamId);
+    }
+
+    function updateAuctionBidMin() {
+      const player = getPlayer(auctionPlayerSelect.value);
+      const minBid = player ? getMinBid(player.name) : MIN_BID_NORMAL;
+      auctionBidInput.min = minBid;
+      if (Number(auctionBidInput.value) < minBid) {
+        auctionBidInput.value = minBid;
+      }
+    }
+
+    function render() {
+      renderTeams();
+      renderPlayers();
+      renderAuctionControls();
+      renderAuctionBoard();
+      attachDropZoneEvents();
+      attachPlayerEvents();
+      saveState();
+    }
+
+    function renderTeams() {
+      teamsGrid.innerHTML = "";
+
+      state.teams.forEach((team) => {
+        const usedPoints = getUsedPoints(team.id);
+        const remainPoints = getRemainPoints(team.id);
+        const assignedPlayers = getTeamPlayers(team.id);
+
+        const teamCard = document.createElement("article");
+        teamCard.className = "team-card";
+        teamCard.dataset.teamId = team.id;
+
+        teamCard.innerHTML = `
+          <div class="team-header">
+            <div>
+              <h3 class="team-name">${team.name}</h3>
+              ${team.note ? `<span class="team-note">${team.note}</span>` : ""}
+            </div>
+            <div class="point-pill">${remainPoints}P</div>
+          </div>
+          <div class="team-stats">
+            <div class="stat-box">
+              <span>총 보유</span>
+              <strong>${remainPoints}P</strong>
+            </div>
+            <div class="stat-box">
+              <span>총 사용</span>
+              <strong>${usedPoints}P</strong>
+            </div>
+          </div>
+          <div class="team-members" data-drop-zone="team" data-team-id="${team.id}">
+            ${
+              assignedPlayers.length
+                ? assignedPlayers.map((player) => createPlayerCardMarkup(player)).join("")
+                : `<div class="empty-message">아직 팀원이 없습니다.</div>`
+            }
+          </div>
+        `;
+
+        teamsGrid.appendChild(teamCard);
+      });
+
+    }
+
+    function renderPlayers() {
+      const freePlayers = state.players.filter((player) => player.teamId === null);
+
+      playersList.innerHTML = freePlayers.length
+        ? freePlayers.map((player) => createPlayerCardMarkup(player)).join("")
+        : `<div class="empty-message">모든 선수가 팀에 배정되었습니다.</div>`;
+
+      playersList.dataset.dropZone = "free";
+    }
+
+    function renderAuctionControls() {
+      const selectedPlayerId = auctionPlayerSelect.value || state.players[0]?.id || "";
+      const selectedTeamId = auctionTeamSelect.value || state.teams[0]?.id || "";
+
+      auctionPlayerSelect.innerHTML = state.players
+        .map((player) => `<option value="${player.id}">${player.name}</option>`)
+        .join("");
+
+      auctionTeamSelect.innerHTML = state.teams
+        .map((team) => `<option value="${team.id}">${team.name} - 남은 ${getRemainPoints(team.id)}P</option>`)
+        .join("");
+
+      if (getPlayer(selectedPlayerId)) {
+        auctionPlayerSelect.value = selectedPlayerId;
+      }
+
+      if (getTeam(selectedTeamId)) {
+        auctionTeamSelect.value = selectedTeamId;
+      }
+
+      updateAuctionBidMin();
+    }
+
+    function renderAuctionBoard() {
+      if (!state.auctionBids.length) {
+        auctionBidList.innerHTML = `<div class="empty-message">아직 입력된 경매값이 없습니다.</div>`;
+        return;
+      }
+
+      auctionBidList.innerHTML = [...state.auctionBids]
+        .sort((firstBid, secondBid) => secondBid.value - firstBid.value)
+        .map((bid) => {
+          const player = getPlayer(bid.playerId);
+          const team = getTeam(bid.teamId);
+          const isGoldTier = player && goldTierPlayers.includes(player.name);
+
+          return `
+            <div class="auction-bid-item">
+              <div class="auction-bid-top">
+                <span class="${isGoldTier ? "gold-name" : ""}">${player?.name || "-"}</span>
+                <span class="auction-bid-point">${bid.value}P</span>
+              </div>
+              <div class="auction-bid-team">${team?.name || "-"}</div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function createPlayerCardMarkup(player) {
+      const isAssigned = Boolean(player.teamId);
+      const isGoldTier = goldTierPlayers.includes(player.name);
+      return `
+        <article class="player-card ${isAssigned ? "assigned" : ""}" draggable="true" role="button" tabindex="0" data-player-id="${player.id}">
+          <div class="player-name ${isGoldTier ? "gold-name" : ""}">${player.name}</div>
+          <div class="player-meta">
+            <span class="score-badge">${player.score}P</span>
+            <span class="status-badge ${isAssigned ? "selected" : ""}">${isAssigned ? "선택됨" : "미선택"}</span>
+          </div>
+        </article>
+      `;
+    }
+
+    function attachPlayerEvents() {
+      document.querySelectorAll(".player-card").forEach((card) => {
+        card.addEventListener("dragstart", handleDragStart);
+        card.addEventListener("dragend", handleDragEnd);
+      });
+    }
+
+    function attachDropZoneEvents() {
+      document.querySelectorAll("[data-drop-zone], .players-list").forEach((zone) => {
+        if (zone.dataset.dropBound === "true") {
+          return;
+        }
+
+        zone.dataset.dropBound = "true";
+        zone.addEventListener("dragover", handleDragOver);
+        zone.addEventListener("dragleave", handleDragLeave);
+        zone.addEventListener("drop", handleDrop);
+      });
+    }
+
+    function handleDragStart(event) {
+      draggedPlayerId = event.currentTarget.dataset.playerId;
+      event.currentTarget.classList.add("dragging");
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", draggedPlayerId);
+    }
+
+    function handleDragEnd(event) {
+      draggedPlayerId = null;
+      event.currentTarget.classList.remove("dragging");
+      document.querySelectorAll(".drag-over").forEach((element) => element.classList.remove("drag-over"));
+    }
+
+    function handleDragOver(event) {
+      event.preventDefault();
+      const highlightTarget = getHighlightTarget(event.currentTarget);
+      highlightTarget.classList.add("drag-over");
+    }
+
+    function handleDragLeave(event) {
+      if (event.currentTarget.contains(event.relatedTarget)) {
+        return;
+      }
+
+      const highlightTarget = getHighlightTarget(event.currentTarget);
+      highlightTarget.classList.remove("drag-over");
+    }
+
+    function handleDrop(event) {
+      event.preventDefault();
+      const playerId = event.dataTransfer.getData("text/plain") || draggedPlayerId;
+      const player = getPlayer(playerId);
+
+      if (!player) {
+        return;
+      }
+
+      const zone = event.currentTarget;
+      const teamId = zone.dataset.dropZone === "team" ? zone.dataset.teamId : null;
+
+      if (teamId && teamId !== player.teamId && player.score > getRemainPoints(teamId)) {
+        alert("포인트가 없습니다.");
+        document.querySelectorAll(".drag-over").forEach((element) => element.classList.remove("drag-over"));
+        return;
+      }
+
+      player.teamId = teamId;
+      document.querySelectorAll(".drag-over").forEach((element) => element.classList.remove("drag-over"));
+      render();
+    }
+
+    function getHighlightTarget(zone) {
+      return zone.dataset.dropZone === "team" ? zone.closest(".team-card") : zone;
+    }
+
+    function handlePlayerCardClick(event) {
+      const playerCard = event.target.closest(".player-card");
+
+      if (!playerCard || playerCard.classList.contains("dragging")) {
+        return;
+      }
+
+      event.preventDefault();
+      openScoreModal(playerCard.dataset.playerId);
+    }
+
+    function handlePlayerCardKeydown(event) {
+      const playerCard = event.target.closest(".player-card");
+
+      if (!playerCard || (event.key !== "Enter" && event.key !== " ")) {
+        return;
+      }
+
+      event.preventDefault();
+      openScoreModal(playerCard.dataset.playerId);
+    }
+
+    function openScoreModal(playerId) {
+      const player = getPlayer(playerId);
+      editingPlayerId = playerId;
+      modalError.textContent = "";
+      scoreInput.value = player.score;
+      modalTitle.textContent = `${player.name} 점수 입력`;
+
+      if (player.teamId) {
+        const team = getTeam(player.teamId);
+        const remainExceptCurrent = getRemainPoints(team.id) + player.score;
+        modalDescription.textContent = `${team.name} 팀에서 사용할 점수를 입력하세요. 입력 가능 포인트: ${remainExceptCurrent}P`;
+      } else {
+        modalDescription.textContent = "아직 팀에 배정되지 않은 선수입니다. 기본 포인트는 1P이며, 팀 배정 전에도 점수를 바꿀 수 있습니다.";
+      }
+
+      scoreModal.classList.add("open");
+      scoreInput.focus();
+      scoreInput.select();
+    }
+
+    function closeScoreModal() {
+      scoreModal.classList.remove("open");
+      editingPlayerId = null;
+    }
+
+    function savePlayerScore() {
+      const player = getPlayer(editingPlayerId);
+      const nextScore = Number(scoreInput.value);
+
+      if (!player) {
+        return;
+      }
+
+      const validationMessage = validateScore(player, nextScore);
+
+      if (validationMessage) {
+        modalError.textContent = validationMessage;
+        return;
+      }
+
+      player.score = nextScore;
+      closeScoreModal();
+      render();
+    }
+
+    function validateScore(player, nextScore) {
+      const minBid = getMinBid(player.name);
+
+      if (!Number.isInteger(nextScore)) {
+        return "점수는 1 단위의 정수로 입력해주세요.";
+      }
+
+      if (nextScore < 0) {
+        return "음수 점수는 입력할 수 없습니다.";
+      }
+
+      if (nextScore < minBid) {
+        return `최소 베팅은 ${minBid}입니다.`;
+      }
+
+      if (player.teamId) {
+        const remainExceptCurrent = getRemainPoints(player.teamId) + player.score;
+
+        if (nextScore > remainExceptCurrent) {
+          return "포인트가 없습니다.";
+        }
+      }
+
+      return "";
+    }
+
+    function applyAuctionBid() {
+      const player = getPlayer(auctionPlayerSelect.value);
+      const team = getTeam(auctionTeamSelect.value);
+      const bidValue = Number(auctionBidInput.value);
+
+      auctionMessage.className = "auction-message";
+
+      if (!player || !team) {
+        showAuctionMessage("선수와 부른 사람을 선택해주세요.", "error");
+        return;
+      }
+
+      const validationMessage = validateAuctionBid(team.id, bidValue);
+
+      if (validationMessage) {
+        showAuctionMessage(validationMessage, "error");
+        return;
+      }
+
+      const existingBid = state.auctionBids.find((bid) => bid.playerId === player.id && bid.teamId === team.id);
+
+      if (existingBid) {
+        existingBid.value = bidValue;
+        state.auctionBids = [
+          existingBid,
+          ...state.auctionBids.filter((bid) => bid !== existingBid)
+        ];
+      } else {
+        state.auctionBids.unshift({
+          playerId: player.id,
+          teamId: team.id,
+          value: bidValue
+        });
+      }
+
+      showAuctionMessage(`${player.name} ${bidValue}P 경매값을 기록했습니다.`, "success");
+      render();
+    }
+
+    function awardHighestBid() {
+      const player = getPlayer(auctionPlayerSelect.value);
+
+      if (!player) {
+        showAuctionMessage("낙찰할 선수를 선택해주세요.", "error");
+        return;
+      }
+
+      const bidsForPlayer = state.auctionBids.filter((bid) => bid.playerId === player.id);
+
+      if (!bidsForPlayer.length) {
+        showAuctionMessage("이 선수에게 입력된 경매값이 없습니다.", "error");
+        return;
+      }
+
+      const highestBid = bidsForPlayer.reduce((highest, bid) => {
+        if (bid.value > highest.value) {
+          return bid;
+        }
+
+        return highest;
+      });
+      const team = getTeam(highestBid.teamId);
+
+      if (!team) {
+        showAuctionMessage("낙찰할 팀 정보를 찾을 수 없습니다.", "error");
+        return;
+      }
+
+      if (highestBid.value > getAvailablePointsForPlayerTeam(player, team.id)) {
+        showAuctionMessage("포인트가 없습니다.", "error");
+        return;
+      }
+
+      player.teamId = team.id;
+      player.score = highestBid.value;
+      state.auctionBids = state.auctionBids.filter((bid) => bid.playerId !== player.id);
+      showAuctionMessage(`${player.name} ${highestBid.value}P, ${team.name} 팀에 낙찰되었습니다.`, "success");
+      render();
+    }
+
+    function validateAuctionBid(teamId, bidValue) {
+      const player = getPlayer(auctionPlayerSelect.value);
+      const minBid = player ? getMinBid(player.name) : MIN_BID_NORMAL;
+
+      if (!Number.isInteger(bidValue)) {
+        return "경매값은 1 단위의 정수로 입력해주세요.";
+      }
+
+      if (bidValue < minBid) {
+        return `최소 베팅은 ${minBid}입니다.`;
+      }
+
+      if (player && bidValue > getAvailablePointsForPlayerTeam(player, teamId)) {
+        return "포인트가 없습니다.";
+      }
+
+      return "";
+    }
+
+    function getAvailablePointsForPlayerTeam(player, teamId) {
+      const currentScore = player.teamId === teamId ? player.score : 0;
+      return getRemainPoints(teamId) + currentScore;
+    }
+
+    function showAuctionMessage(message, type) {
+      auctionMessage.textContent = message;
+      auctionMessage.classList.toggle("error", type === "error");
+      auctionMessage.classList.toggle("success", type === "success");
+    }
+
+    function shufflePlayers() {
+      for (let index = state.players.length - 1; index > 0; index -= 1) {
+        const randomIndex = Math.floor(Math.random() * (index + 1));
+        [state.players[index], state.players[randomIndex]] = [state.players[randomIndex], state.players[index]];
+      }
+
+      render();
+    }
+
+    function resetAll() {
+      const shouldReset = confirm("모든 팀 배정과 점수를 초기화할까요?");
+
+      if (!shouldReset) {
+        return;
+      }
+
+      state = createInitialState();
+      localStorage.removeItem(STORAGE_KEY);
+      render();
+    }
+
+    auctionPlayerSelect.addEventListener("change", updateAuctionBidMin);
+    shuffleButton.addEventListener("click", shufflePlayers);
+    resetButton.addEventListener("click", resetAll);
+    auctionApplyButton.addEventListener("click", applyAuctionBid);
+    awardButton.addEventListener("click", awardHighestBid);
+    document.addEventListener("click", handlePlayerCardClick);
+    document.addEventListener("keydown", handlePlayerCardKeydown);
+    cancelScoreButton.addEventListener("click", closeScoreModal);
+    saveScoreButton.addEventListener("click", savePlayerScore);
+
+    auctionBidInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        applyAuctionBid();
+      }
+    });
+
+    scoreInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        savePlayerScore();
+      }
+
+      if (event.key === "Escape") {
+        closeScoreModal();
+      }
+    });
+
+    scoreModal.addEventListener("click", (event) => {
+      if (event.target === scoreModal) {
+        closeScoreModal();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
